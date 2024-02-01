@@ -20,7 +20,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    private String publishDate;
+    private double price;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "books")

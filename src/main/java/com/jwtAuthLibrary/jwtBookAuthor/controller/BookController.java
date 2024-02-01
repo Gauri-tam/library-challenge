@@ -35,6 +35,11 @@ public class BookController {
         return ResponseEntity.ok(bookServices.getAll(pageNumber, pageSize));
     }
 
+//    @GetMapping("/book/{name}")
+//    public ResponseEntity<List<Book>> getAllSorted(@PathVariable("name") String name){
+//        return ResponseEntity.ok(bookServices.getAllSorted(name)) ;
+//    }
+
     @GetMapping("/book/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable("id") Integer id){
         return ResponseEntity.ok(bookServices.getById(id));
@@ -44,5 +49,4 @@ public class BookController {
     public ResponseEntity<String> deleteBookById(@PathVariable("id") Integer id){
         return ResponseEntity.ok(bookServices.deleteById(id));
     }
-
 }

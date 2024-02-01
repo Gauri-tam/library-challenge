@@ -51,4 +51,10 @@ public class BookServices {
         }
         return null;
     }
+
+//    public List<Book> getAllSorted(String name) {
+//        Sort books = Sort.by(name);
+//        return bookRepository.findAll(books);
+//    }
+
 }
