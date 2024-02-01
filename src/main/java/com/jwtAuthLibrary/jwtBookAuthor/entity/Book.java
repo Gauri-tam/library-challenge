@@ -23,6 +23,6 @@ public class Book {
     private String publishDate;
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.DETACH, fetch =  FetchType.EAGER ,mappedBy = "books")
+    @ManyToMany(mappedBy = "books")
     private List<Author> authors;
 }
