@@ -17,7 +17,7 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
+    private String authName;
     private String email;
 
     @ManyToMany(cascade = CascadeType.ALL,fetch =  FetchType.EAGER)

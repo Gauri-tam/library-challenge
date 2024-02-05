@@ -1,8 +1,12 @@
 package com.jwtAuthLibrary.jwtBookAuthor.controller;
 
+import com.jwtAuthLibrary.jwtBookAuthor.entity.Author;
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Book;
+import com.jwtAuthLibrary.jwtBookAuthor.pagesort.PageableAndSorting;
 import com.jwtAuthLibrary.jwtBookAuthor.service.BookServices;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,22 +27,15 @@ public class BookController {
     }
 
     @PutMapping("/book/{id}")
-    public ResponseEntity<Book> updateBook(@RequestBody Book book,@PathVariable("id") Integer id){
-        return ResponseEntity.ok(bookServices.update(book,id));
+    public ResponseEntity<Book> updateBook(@RequestBody Book book,@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(bookServices.update(book, id));
     }
 
-    @GetMapping("/book")
-    public ResponseEntity<List<Book>> getAllBook(
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize
-    ){
-        return ResponseEntity.ok(bookServices.getAll(pageNumber, pageSize));
+    @GetMapping("/book") // without parameter new method
+    public Page<Book> getAllAuthor(@RequestBody PageableAndSorting sorting){
+        Pageable pageable = new PageableAndSorting().getPage(sorting);
+        return bookServices.findAllAuthor(pageable);
     }
-
-//    @GetMapping("/book/{name}")
-//    public ResponseEntity<List<Book>> getAllSorted(@PathVariable("name") String name){
-//        return ResponseEntity.ok(bookServices.getAllSorted(name)) ;
-//    }
 
     @GetMapping("/book/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable("id") Integer id){

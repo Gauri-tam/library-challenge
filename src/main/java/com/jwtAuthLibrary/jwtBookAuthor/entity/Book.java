@@ -15,11 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class Book {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
+    private String bookName;
     private double price;
 
     @JsonIgnore

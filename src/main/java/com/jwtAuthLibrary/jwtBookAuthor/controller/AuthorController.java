@@ -1,13 +1,13 @@
 package com.jwtAuthLibrary.jwtBookAuthor.controller;
 
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Author;
+import com.jwtAuthLibrary.jwtBookAuthor.pagesort.PageableAndSorting;
 import com.jwtAuthLibrary.jwtBookAuthor.service.AuthorServices;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/library")
@@ -30,14 +30,10 @@ public class AuthorController {
         return ResponseEntity.ok(authorServices.update(author, id));
     }
 
-    @GetMapping("/author")
-    public ResponseEntity<List<Author>> getAllAuthor(
-            @RequestParam( value = "pageNumber", defaultValue = "0", required = false)Integer pageNumber,
-            @RequestParam( value = "pageSize", defaultValue = "10", required = false)Integer pageSize ) {
-
-        List<Author> authors = authorServices.getAll(pageNumber, pageSize);
-
-        return new ResponseEntity<>(authors, HttpStatus.ACCEPTED);
+    @GetMapping("/author") // without parameter new method
+    public Page<Author> getAllAuthor(@RequestBody PageableAndSorting sorting){
+        Pageable pageable = new PageableAndSorting().getPage(sorting);
+        return authorServices.findAllBook(pageable);
     }
 
     @GetMapping("/author/{id}")
