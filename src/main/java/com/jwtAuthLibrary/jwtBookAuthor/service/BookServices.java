@@ -30,7 +30,12 @@ public class BookServices {
         return null;
     }
 
-    //
+    // Sort by author name
+    public Page<Book> findAllAuthor(String authName, Pageable pageable){
+       return bookRepository.findBookByAuthName(authName, pageable);
+    }
+
+    //get all data
     public Page<Book> findAllAuthor(Pageable pageable){
         return bookRepository.findAll(pageable);
     }

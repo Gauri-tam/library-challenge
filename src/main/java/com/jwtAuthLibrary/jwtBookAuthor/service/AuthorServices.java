@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
 import java.util.Optional;
 
 @Service
@@ -32,8 +31,13 @@ public class AuthorServices {
         return null;
     }
 
-   // pageable and Sorting without any parameter
-    public Page<Author> findAllBook(Pageable pageable){
+    // sorting by bookName
+    public Page<Author> findAllAuthors(String bookName, Pageable pageable) {
+        return authorRepository.findAuthorByBookName( bookName, pageable);
+    }
+
+    // get all data
+    public Page<Author> findAllAuthors(Pageable pageable) {
         return authorRepository.findAll(pageable);
     }
 

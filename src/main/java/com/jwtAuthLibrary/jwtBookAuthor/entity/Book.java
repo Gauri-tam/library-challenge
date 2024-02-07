@@ -17,7 +17,7 @@ import java.util.List;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int bookId;
     private String bookName;
     private double price;
 

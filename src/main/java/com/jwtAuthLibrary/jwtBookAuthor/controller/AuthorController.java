@@ -9,12 +9,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/library")
 @RequiredArgsConstructor
 public class AuthorController {
 
-    // http://localhost:8080/api/v1/library/delete/{id}
+    // http://localhost:8080/api/v1/library/author/get
 
     private final AuthorServices authorServices;
 
@@ -26,14 +28,19 @@ public class AuthorController {
     @PutMapping("/author/{id}")
     public ResponseEntity<Author> updateAuthor(
             @RequestBody Author author,@PathVariable("id") Integer id){
-
         return ResponseEntity.ok(authorServices.update(author, id));
     }
 
-    @GetMapping("/author") // without parameter new method
+    @GetMapping("/author")
+    public Page<Author> getAllAuthor(@RequestBody PageableAndSorting sorting, String bookName){
+        Pageable pageable = new PageableAndSorting().getPage(sorting);
+        return authorServices.findAllAuthors(bookName, pageable);
+    }
+
+    @GetMapping("/author/get")
     public Page<Author> getAllAuthor(@RequestBody PageableAndSorting sorting){
         Pageable pageable = new PageableAndSorting().getPage(sorting);
-        return authorServices.findAllBook(pageable);
+        return authorServices.findAllAuthors(pageable);
     }
 
     @GetMapping("/author/{id}")
@@ -41,7 +48,7 @@ public class AuthorController {
        return ResponseEntity.ok(authorServices.getById(id)) ;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/author/{id}")
     public ResponseEntity<String> deleteAuthor(@PathVariable("id") Integer id){
         return ResponseEntity.ok(authorServices.deleteById(id));
     }

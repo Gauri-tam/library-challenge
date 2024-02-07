@@ -16,10 +16,15 @@ import java.util.List;
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int authId;
     private String authName;
     private String email;
 
     @ManyToMany(cascade = CascadeType.ALL,fetch =  FetchType.EAGER)
+    @JoinTable(
+            name = "author_book",
+            joinColumns = @JoinColumn(name = "author_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
     private List<Book> books;
 }

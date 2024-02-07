@@ -1,6 +1,5 @@
 package com.jwtAuthLibrary.jwtBookAuthor.controller;
 
-import com.jwtAuthLibrary.jwtBookAuthor.entity.Author;
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Book;
 import com.jwtAuthLibrary.jwtBookAuthor.pagesort.PageableAndSorting;
 import com.jwtAuthLibrary.jwtBookAuthor.service.BookServices;
@@ -9,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/library")
@@ -31,7 +28,13 @@ public class BookController {
         return ResponseEntity.ok(bookServices.update(book, id));
     }
 
-    @GetMapping("/book") // without parameter new method
+    @GetMapping("/book")
+    public Page<Book> getAllAuthor(@RequestBody PageableAndSorting sorting, String authName){
+        Pageable pageable = new PageableAndSorting().getPage(sorting);
+        return bookServices.findAllAuthor(authName, pageable);
+    }
+
+    @GetMapping("/book/get")
     public Page<Book> getAllAuthor(@RequestBody PageableAndSorting sorting){
         Pageable pageable = new PageableAndSorting().getPage(sorting);
         return bookServices.findAllAuthor(pageable);
