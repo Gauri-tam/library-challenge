@@ -46,7 +46,7 @@ public class BookServices {
         return book.orElse(null);
     }
 
-    //delete data by using id
+    //delete data by using id but we Cannot delete or update a parent row
     public String deleteById(Integer id){
         Optional<Book> book = bookRepository.findById(id);
         if (book.isPresent()){

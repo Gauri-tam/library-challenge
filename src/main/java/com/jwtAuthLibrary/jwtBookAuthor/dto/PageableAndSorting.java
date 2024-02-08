@@ -1,4 +1,4 @@
-package com.jwtAuthLibrary.jwtBookAuthor.pagesort;
+package com.jwtAuthLibrary.jwtBookAuthor.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,15 +1,13 @@
 package com.jwtAuthLibrary.jwtBookAuthor.controller;
 
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Author;
-import com.jwtAuthLibrary.jwtBookAuthor.pagesort.PageableAndSorting;
+import com.jwtAuthLibrary.jwtBookAuthor.dto.PageableAndSorting;
 import com.jwtAuthLibrary.jwtBookAuthor.service.AuthorServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/library")

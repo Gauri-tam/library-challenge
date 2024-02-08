@@ -17,13 +17,13 @@ public class AuthorServices {
     // To access All the Repository methods
     private final AuthorRepository authorRepository;
 
-    //to save data in database
+    //To save data in database
     public String create(Author author){
         authorRepository.save(author);
         return "Created !";
     }
 
-    //to update data by using id
+    //To update data by using id
     public Author update(Author author, Integer id){
         if (authorRepository.existsById(id)){
            return this.authorRepository.save(author);
@@ -31,23 +31,23 @@ public class AuthorServices {
         return null;
     }
 
-    // sorting by bookName
+    // To sorting by bookName
     public Page<Author> findAllAuthors(String bookName, Pageable pageable) {
-        return authorRepository.findAuthorByBookName( bookName, pageable);
+        return authorRepository.findAuthorByBookName(bookName, pageable);
     }
 
-    // get all data
+    // To get all data
     public Page<Author> findAllAuthors(Pageable pageable) {
         return authorRepository.findAll(pageable);
     }
 
-    // to get data by using id
+    // To get data by using id
     public Author getById(Integer id){
         Optional<Author> author = authorRepository.findById(id);
         return author.orElse(null);
     }
 
-    //delete data by using id
+    // To delete data by using id
     public String deleteById(Integer id){
         Optional<Author> author = authorRepository.findById(id);
         if (author.isPresent()){

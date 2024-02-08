@@ -1,7 +1,7 @@
 package com.jwtAuthLibrary.jwtBookAuthor.controller;
 
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Book;
-import com.jwtAuthLibrary.jwtBookAuthor.pagesort.PageableAndSorting;
+import com.jwtAuthLibrary.jwtBookAuthor.dto.PageableAndSorting;
 import com.jwtAuthLibrary.jwtBookAuthor.service.BookServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
