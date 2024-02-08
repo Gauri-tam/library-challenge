@@ -1,13 +1,16 @@
 package com.jwtAuthLibrary.jwtBookAuthor.service;
 
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Author;
+import com.jwtAuthLibrary.jwtBookAuthor.entity.Book;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.AuthorRepository;
+import com.jwtAuthLibrary.jwtBookAuthor.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,6 +19,8 @@ public class AuthorServices {
 
     // To access All the Repository methods
     private final AuthorRepository authorRepository;
+
+    private final BookRepository bookRepository;
 
     //To save data in database
     public String create(Author author){
@@ -32,8 +37,13 @@ public class AuthorServices {
     }
 
     // To sorting by bookName
-    public Page<Author> findAllAuthors(String bookName, Pageable pageable) {
-        return authorRepository.findAuthorByBookName(bookName, pageable);
+    public Page<Author> findAllAuthors(String bookName, Pageable pageable){
+       List<Book> booksList = bookRepository.existsByBooksByBookName(bookName);
+        for (Book books: booksList) {
+            String book = books.getBookName();
+            return authorRepository.findAuthorByBookName(book, pageable);
+        }
+        return Page.empty();
     }
 
     // To get all data
