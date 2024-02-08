@@ -22,6 +22,6 @@ public interface BookRepository extends JpaRepository<Book, Integer>{
             "    where a.authName = :authName")
         Page<Book> findBookByAuthName(@Param("authName") String authName, Pageable pageable);
 
-       @Query("select b from Book b where b.bookName like CONCAT('%', :bookName, '%')")
+       @Query("select b from Book b where b.bookName like %:bookName%")
         List<Book> existsByBooksByBookName(@Param("bookName") String bookName);
 }
