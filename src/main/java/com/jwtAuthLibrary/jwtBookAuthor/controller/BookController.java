@@ -29,13 +29,13 @@ public class BookController {
     }
 
     @GetMapping("/book")
-    public Page<Book> getAllAuthor(@RequestBody PageableAndSorting sorting, String authName){
+    public Page<Book> getAllBook(@RequestBody PageableAndSorting sorting, String authName){
         Pageable pageable = new PageableAndSorting().getPage(sorting);
         return bookServices.findAllAuthor(authName, pageable);
     }
 
     @GetMapping("/book/get")
-    public Page<Book> getAllAuthor(@RequestBody PageableAndSorting sorting){
+    public Page<Book> getAllBook(@RequestBody PageableAndSorting sorting){
         Pageable pageable = new PageableAndSorting().getPage(sorting);
         return bookServices.findAllAuthor(pageable);
     }
