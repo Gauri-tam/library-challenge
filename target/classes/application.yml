@@ -2,3 +2,10 @@ spring:
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
+application:
+  security:
+    jwt:
+      secrete-key: 0c5332768693a40a1a4747cfe020494138a36405063fe923a99e3536205e452b
+      expiration: 600000
+      refresh-token:
+        expiration: 172800000

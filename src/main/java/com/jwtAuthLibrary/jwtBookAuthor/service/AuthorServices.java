@@ -38,10 +38,10 @@ public class AuthorServices {
 
     // To sorting by bookName
     public Page<Author> findAllAuthors(String bookName, Pageable pageable){
-       List<Book> booksList = bookRepository.existsByBooksByBookName(bookName);
-        for (Book books: booksList) {
-            String book = books.getBookName();
-            return authorRepository.findAuthorByBookName(book, pageable);
+        List<Book> books = bookRepository.existsByBooksByBookName(bookName);
+        for (Book book: books) {
+            String singleBook = book.getBookName();
+            return authorRepository.findAuthorByBookName(singleBook, pageable);
         }
         return Page.empty();
     }
