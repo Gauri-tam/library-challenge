@@ -1,7 +1,6 @@
 package com.jwtAuthLibrary.jwtBookAuthor.repository;
 
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Token;
-import com.jwtAuthLibrary.jwtBookAuthor.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

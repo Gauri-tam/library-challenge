@@ -1,7 +1,6 @@
 package com.jwtAuthLibrary.jwtBookAuthor.repository;
 
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Author;
-import com.jwtAuthLibrary.jwtBookAuthor.entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

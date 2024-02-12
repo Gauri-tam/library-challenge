@@ -1,6 +1,5 @@
 package com.jwtAuthLibrary.jwtBookAuthor.dto;
 
-import com.jwtAuthLibrary.jwtBookAuthor.entity.Token;
 import com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
