@@ -25,7 +25,7 @@ public class LogOutService implements LogoutHandler {
         var storeUser = tokenRepository.findUserByToken(token).orElseThrow();
        if (storeUser != null){
            storeUser.setRevoked(true);
-           storeUser.setRevoked(true);
+           storeUser.setExpired(true);
            tokenRepository.save(storeUser);
        }
     }

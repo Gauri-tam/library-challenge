@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/library/admin")
 public class AdminController {
 
-// http://localhost:8080/api/v1/library/admin/book/get
+// http://localhost:8080/api/v1/library/admin/admin/get
 
     /***
      *  admin can access all the operation by followed

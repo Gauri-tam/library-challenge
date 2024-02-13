@@ -38,20 +38,23 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req->req
                         .requestMatchers("/api/v1/library/**").permitAll() //for creating book and admin;
                         .requestMatchers("/api/v1/auth/library/**").permitAll() // post all register, authenticate, refresh token;
-                        .requestMatchers("/api/v1/library/super-admin/**").permitAll() //
+                        // all super admin related operations
+                        .requestMatchers("/api/v1/library/super-admin/**").hasRole(SUPER_ADMIN.name()) // it also can created admin
                         .requestMatchers(GET,"/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_READ.name())
                         .requestMatchers(POST,"/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_CREATE.name())
                         .requestMatchers(PUT,"/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_UPDATE.name())
                         .requestMatchers(DELETE,"/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_DELETE.name())
+                        // all admin related operations
                         .requestMatchers( "/api/v1/library/admin/**").hasRole(ADMIN.name())
                         .requestMatchers(GET,"/api/v1/library/admin/**").hasAuthority(ADMIN_READ.name())
                         .requestMatchers(POST, "/api/v1/library/admin/**").hasAuthority(ADMIN_CREATE.name())
                         .requestMatchers(PUT, "/api/v1/library/admin/**").hasAuthority(ADMIN_UPDATE.name())
                         .requestMatchers(DELETE, "/api/v1/library/admin/**").hasAuthority(ADMIN_DELETE.name())
+                        // only get operations for user
                         .requestMatchers("/api/v1/library/user/**").hasRole(USER.name())
                         .requestMatchers(GET, "/api/v1/library/user/**").hasAuthority(USER_READ.name())
                         .anyRequest().authenticated())
-                .exceptionHandling(exception->exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .exceptionHandling(exception->exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)) // response messages
                 .sessionManagement(session->session .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class)

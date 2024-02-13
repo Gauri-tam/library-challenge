@@ -9,6 +9,9 @@ import com.jwtAuthLibrary.jwtBookAuthor.entity.Token;
 import com.jwtAuthLibrary.jwtBookAuthor.entity.User;
 import com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles;
 import com.jwtAuthLibrary.jwtBookAuthor.enumerate.TokenType;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.HeaderIsNotPresentException;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.TokenIsNotValid;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.UserIsNotPresent;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.TokenRepository;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -118,7 +121,7 @@ public class JwtAuthenticationServices {
     }
 
     // generate access token by using refresh token.
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
@@ -127,18 +130,22 @@ public class JwtAuthenticationServices {
         }
         refreshToken = authHeader.substring(7);
         userEmail = jwtServices.extractUserName(refreshToken);
-        if (userEmail != null ){
+        if (userEmail != null){
             var user = userRepository.findByEmail(userEmail).orElseThrow();
             if (jwtServices.isValidToken(refreshToken,user)){
-                var jwtToken = jwtServices.generateToken(user);
+                var accessToken = jwtServices.generateToken(user);
                 revokedAllToken(user);
-                saveUserToken(user, jwtToken);
-                var authToken = UserAuthenticationResponse.builder()
-                        .accessToken(jwtToken)
+                saveUserToken(user, accessToken);
+                var authResponse = UserAuthenticationResponse.builder()
+                        .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
-                new ObjectMapper().writeValue(response.getOutputStream(), authToken);
+                new ObjectMapper().writeValue(response.getOutputStream(), authResponse );
+            }else {
+                throw new TokenIsNotValid("your current token is not valid!");
             }
+        }else {
+            throw new UserIsNotPresent("Username is Not Present!");
         }
     }
 }
