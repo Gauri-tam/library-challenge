@@ -7,6 +7,7 @@ import com.jwtAuthLibrary.jwtBookAuthor.dto.UserRegisterRequest;
 import com.jwtAuthLibrary.jwtBookAuthor.dto.UserRegisterResponse;
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Token;
 import com.jwtAuthLibrary.jwtBookAuthor.entity.User;
+import com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles;
 import com.jwtAuthLibrary.jwtBookAuthor.enumerate.TokenType;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.TokenRepository;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.UserRepository;
@@ -36,19 +37,43 @@ public class JwtAuthenticationServices {
     private final TokenRepository tokenRepository;
 
      // This method is use to get register the user;
-    public UserRegisterResponse registration(UserRegisterRequest request) {
+    public UserRegisterResponse registration(UserRegisterRequest request, HttpServletRequest req) {
+        String authHeader = req.getHeader("Authorization");
+        if (authHeader == null){
+            var user = User.builder()
+                    .firstName(request.getFirstName())
+                    .lastName(request.getLastName())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .roles(Roles.USER)
+                    .build();
+            userRepository.save(user);
+            return UserRegisterResponse.builder()
+                    .userName(request.getFirstName()+" "+request.getLastName())
+                    .userEmail(request.getEmail())
+                    .message("User Created Successfully!")
+                    .build();
+        }
+        return UserRegisterResponse.builder()
+                .userName(request.getFirstName()+" "+request.getLastName())
+                .userEmail(request.getEmail())
+                .message("Authorization Must Be Null!")
+                .build();
+    }
+
+    public UserRegisterResponse registerSuperAdmin(UserRegisterRequest request) {
         var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .roles(request.getRoles())
+                .roles(Roles.SUPER_ADMIN)
                 .build();
         userRepository.save(user);
         return UserRegisterResponse.builder()
                 .userName(request.getFirstName()+" "+request.getLastName())
                 .userEmail(request.getEmail())
-                .message("User Created Successfully!")
+                .message("SUPER_ADMIN Created Successfully!")
                 .build();
     }
 

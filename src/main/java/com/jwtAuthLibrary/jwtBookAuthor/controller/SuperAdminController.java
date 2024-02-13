@@ -1,10 +1,14 @@
 package com.jwtAuthLibrary.jwtBookAuthor.controller;
 
 import com.jwtAuthLibrary.jwtBookAuthor.dto.PageableAndSorting;
+import com.jwtAuthLibrary.jwtBookAuthor.dto.UserRegisterRequest;
+import com.jwtAuthLibrary.jwtBookAuthor.dto.UserRegisterResponse;
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Author;
 import com.jwtAuthLibrary.jwtBookAuthor.entity.Book;
 import com.jwtAuthLibrary.jwtBookAuthor.service.AuthorServices;
 import com.jwtAuthLibrary.jwtBookAuthor.service.BookServices;
+import com.jwtAuthLibrary.jwtBookAuthor.service.SuperAdminService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +29,14 @@ public class SuperAdminController {
     private final AuthorServices authorServices;
 
     private final BookServices bookServices;
+
+    private final SuperAdminService superAdminService;
+
+    // Use to Register the Admin
+    @PostMapping("/register")
+    public ResponseEntity<UserRegisterResponse> registration(@RequestBody UserRegisterRequest request, HttpServletRequest req) {
+        return ResponseEntity.ok(superAdminService.registerAdmin(request, req ));
+    }
 
     @PostMapping("/author")
     public ResponseEntity<String> createAuthor(@RequestBody Author author){

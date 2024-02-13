@@ -1,5 +1,6 @@
 package com.jwtAuthLibrary.jwtBookAuthor.jwt;
 
+import com.jwtAuthLibrary.jwtBookAuthor.repository.TokenRepository;
 import com.jwtAuthLibrary.jwtBookAuthor.service.JwtServices;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,6 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
+    private final TokenRepository tokenRepository;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -43,7 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         userEmail = jwtServices.extractUserName(token);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if (jwtServices.isValidToken(token,userDetails)){
+            var tokenValid = tokenRepository.findUserByToken(token).map(t->t.isExpired() && t.isRevoked()).orElseThrow();
+            if (jwtServices.isValidToken(token,userDetails) && tokenValid){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);

@@ -16,8 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import static com.jwtAuthLibrary.jwtBookAuthor.enumerate.Permission.*;
-import static com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles.ADMIN;
-import static com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles.SUPER_ADMIN;
+import static com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles.*;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
@@ -37,9 +36,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req->req
-                        .requestMatchers("/api/v1/library/**").permitAll()
-                        .requestMatchers("/api/v1/auth/library/**").permitAll()
-                        .requestMatchers("/api/v1/library/super-admin/**").hasRole(SUPER_ADMIN.name())
+                        .requestMatchers("/api/v1/library/**").permitAll() //for creating book and admin;
+                        .requestMatchers("/api/v1/auth/library/**").permitAll() // post all register, authenticate, refresh token;
+                        .requestMatchers("/api/v1/library/super-admin/**").permitAll() //
                         .requestMatchers(GET,"/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_READ.name())
                         .requestMatchers(POST,"/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_CREATE.name())
                         .requestMatchers(PUT,"/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_UPDATE.name())
@@ -49,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(POST, "/api/v1/library/admin/**").hasAuthority(ADMIN_CREATE.name())
                         .requestMatchers(PUT, "/api/v1/library/admin/**").hasAuthority(ADMIN_UPDATE.name())
                         .requestMatchers(DELETE, "/api/v1/library/admin/**").hasAuthority(ADMIN_DELETE.name())
-                        .requestMatchers("/api/v1/library/user/**").hasRole(USER_READ.name())
+                        .requestMatchers("/api/v1/library/user/**").hasRole(USER.name())
                         .requestMatchers(GET, "/api/v1/library/user/**").hasAuthority(USER_READ.name())
                         .anyRequest().authenticated())
                 .exceptionHandling(exception->exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))

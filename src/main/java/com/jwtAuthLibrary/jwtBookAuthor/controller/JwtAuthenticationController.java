@@ -23,12 +23,16 @@ public class JwtAuthenticationController {
 
     private final JwtAuthenticationServices jwtAuthenticationServices;
 
-    // http://localhost:8080/api/v1/auth/library/register
+    // http://localhost:8080/api/v1/auth/library/register/super-admin
 
     // Use to Register the User
     @PostMapping("/register")
-    public ResponseEntity<UserRegisterResponse> registration(@RequestBody UserRegisterRequest request){
-        return ResponseEntity.ok(jwtAuthenticationServices.registration(request));
+    public ResponseEntity<UserRegisterResponse> registration(@RequestBody UserRegisterRequest request, HttpServletRequest req){
+        return ResponseEntity.ok(jwtAuthenticationServices.registration(request, req));
+    }
+    @PostMapping("/register/super-admin")
+    public ResponseEntity<UserRegisterResponse> registrationSuperAdmin(@RequestBody UserRegisterRequest request){
+        return ResponseEntity.ok(jwtAuthenticationServices.registerSuperAdmin(request));
     }
 
     // Use to Authenticate The User
