@@ -1,5 +1,8 @@
 package com.jwtAuthLibrary.jwtBookAuthor.jwt;
 
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.HeaderIsNotPresentException;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.TokenIsNotValid;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.UserIsNotPresent;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.TokenRepository;
 import com.jwtAuthLibrary.jwtBookAuthor.service.JwtServices;
 import jakarta.servlet.FilterChain;
@@ -8,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,8 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
-    private final TokenRepository tokenRepository;
-
+    @SneakyThrows
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -40,18 +43,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String userEmail;
         if (authHeader == null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
-            return;
+          return;
         }
         token = authHeader.substring(7);
         userEmail = jwtServices.extractUserName(token);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            var tokenValid = tokenRepository.findUserByToken(token).map(t->t.isExpired() && t.isRevoked()).orElseThrow();
-            if (jwtServices.isValidToken(token,userDetails) && tokenValid){
+            if (jwtServices.isValidToken(token,userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            }else {
+                throw new TokenIsNotValid("Token is Not Valid!");
             }
+        }
+        else {
+            throw new UserIsNotPresent("User Not Present in Database");
         }
         filterChain.doFilter(request, response);
     }
