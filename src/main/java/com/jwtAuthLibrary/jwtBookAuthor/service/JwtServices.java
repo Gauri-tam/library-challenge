@@ -10,9 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -66,6 +64,7 @@ public class JwtServices {
     private String buildToken(Map<String, Object> claims, UserDetails userDetails, long expiration){
         return Jwts.builder()
                 .setClaims(claims)
+                .setHeaderParam("typ", "JWT")
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -86,5 +85,4 @@ public class JwtServices {
     private Date expiration(String token) {
         return extractClaims(token, Claims::getExpiration);
     }
-
 }

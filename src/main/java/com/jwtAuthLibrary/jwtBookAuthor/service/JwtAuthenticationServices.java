@@ -10,8 +10,8 @@ import com.jwtAuthLibrary.jwtBookAuthor.entity.User;
 import com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles;
 import com.jwtAuthLibrary.jwtBookAuthor.enumerate.TokenType;
 import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.HeaderIsNotPresentException;
-import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.TokenIsNotValid;
-import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.UserIsNotPresent;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.TokenIsNotValidException;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.UserIsNotPresentException;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.TokenRepository;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,8 +22,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +58,7 @@ public class JwtAuthenticationServices {
         return UserRegisterResponse.builder()
                 .userName(request.getFirstName()+" "+request.getLastName())
                 .userEmail(request.getEmail())
-                .message("Authorization Must Be Null!")
+                .message("Authorization must Not Take any Username and Password!")
                 .build();
     }
 
@@ -82,18 +80,18 @@ public class JwtAuthenticationServices {
 
      // This method is use to check if user is Authenticate or Not
     public UserAuthenticationResponse authenticate(UserAuthenticationRequest request) {
-       authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-               request.getUserName(),
-               request.getPassword()));
-       var user = userRepository.findByEmail(request.getUserName()).orElseThrow();
-       var jwtToken = jwtServices.generateToken(user);
-       var refreshToken = jwtServices.generateRefreshToken(user);
-       revokedAllToken(user);
-       saveUserToken(user, jwtToken);
-       return UserAuthenticationResponse.builder()
-               .accessToken(jwtToken)
-               .refreshToken(refreshToken)
-               .build();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getUserName(),
+                request.getPassword()));
+        var user = userRepository.findByEmail(request.getUserName()).orElseThrow();
+        var jwtToken = jwtServices.generateToken(user);
+        var refreshToken = jwtServices.generateRefreshToken(user);
+        revokedAllToken(user);
+        saveUserToken(user, jwtToken);
+        return UserAuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     // whenever the user get authenticated it will generated
@@ -126,7 +124,7 @@ public class JwtAuthenticationServices {
         final String refreshToken;
         final String userEmail;
         if (authHeader == null || !authHeader.startsWith("Bearer ")){
-            return;
+            throw new HeaderIsNotPresentException("Check you Header!");
         }
         refreshToken = authHeader.substring(7);
         userEmail = jwtServices.extractUserName(refreshToken);
@@ -142,10 +140,10 @@ public class JwtAuthenticationServices {
                         .build();
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse );
             }else {
-                throw new TokenIsNotValid("your current token is not valid!");
+                throw new TokenIsNotValidException("your current token is not valid!");
             }
         }else {
-            throw new UserIsNotPresent("Username is Not Present!");
+            throw new UserIsNotPresentException("Username is Not Present!");
         }
     }
 }

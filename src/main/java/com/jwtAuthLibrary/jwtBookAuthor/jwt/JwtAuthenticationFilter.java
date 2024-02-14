@@ -1,8 +1,7 @@
 package com.jwtAuthLibrary.jwtBookAuthor.jwt;
 
-import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.HeaderIsNotPresentException;
-import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.TokenIsNotValid;
-import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.UserIsNotPresent;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.TokenIsNotValidException;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.UserIsNotPresentException;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.TokenRepository;
 import com.jwtAuthLibrary.jwtBookAuthor.service.JwtServices;
 import jakarta.servlet.FilterChain;
@@ -30,6 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
+    private final TokenRepository tokenRepository;
+
     @SneakyThrows
     @Override
     protected void doFilterInternal(
@@ -54,11 +55,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }else {
-                throw new TokenIsNotValid("Token is Not Valid!");
+                throw new TokenIsNotValidException("Token is Not Valid!");
             }
         }
         else {
-            throw new UserIsNotPresent("User Not Present in Database");
+            throw new UserIsNotPresentException("User Not Present in Database");
         }
         filterChain.doFilter(request, response);
     }
