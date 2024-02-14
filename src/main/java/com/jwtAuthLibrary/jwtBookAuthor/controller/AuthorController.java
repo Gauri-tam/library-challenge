@@ -30,15 +30,15 @@ public class AuthorController {
     }
 
     @GetMapping("/author")
-    public Page<Author> getAllAuthor(@RequestBody PageableAndSorting sorting, String bookName){
+    public ResponseEntity<Page<Author>> getAllAuthor(@RequestBody PageableAndSorting sorting, String bookName){
         Pageable pageable = new PageableAndSorting().getPage(sorting);
-        return authorServices.findAllAuthors(bookName, pageable);
+        return ResponseEntity.ok(authorServices.findAllAuthors(bookName, pageable));
     }
 
     @GetMapping("/author/get")
-    public Page<Author> getAllAuthor(@RequestBody PageableAndSorting sorting){
+    public ResponseEntity<Page<Author>> getAllAuthor(@RequestBody PageableAndSorting sorting){
         Pageable pageable = new PageableAndSorting().getPage(sorting);
-        return authorServices.findAllAuthors(pageable);
+        return ResponseEntity.ok(authorServices.findAllAuthors(pageable));
     }
 
     @GetMapping("/author/{id}")
