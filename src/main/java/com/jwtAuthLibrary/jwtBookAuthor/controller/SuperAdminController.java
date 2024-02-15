@@ -34,7 +34,7 @@ public class SuperAdminController {
 
     // Use to Register the Admin
     @PostMapping("/register")
-    public ResponseEntity<UserRegisterResponse> registration(@RequestBody UserRegisterRequest request, HttpServletRequest req) {
+    public ResponseEntity<UserRegisterResponse> registration(@RequestBody UserRegisterRequest request, HttpServletRequest req) throws  Exception {
         return ResponseEntity.ok(superAdminService.registerAdmin(request, req ));
     }
 

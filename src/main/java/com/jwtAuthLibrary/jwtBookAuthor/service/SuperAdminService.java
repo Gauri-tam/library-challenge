@@ -4,6 +4,7 @@ import com.jwtAuthLibrary.jwtBookAuthor.dto.UserRegisterRequest;
 import com.jwtAuthLibrary.jwtBookAuthor.dto.UserRegisterResponse;
 import com.jwtAuthLibrary.jwtBookAuthor.entity.User;
 import com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.UserIsPresentException;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +30,7 @@ public class SuperAdminService {
     private String password;
 
     // register for Admin only
-    public UserRegisterResponse registerAdmin(UserRegisterRequest request, HttpServletRequest req) {
+    public UserRegisterResponse registerAdmin(UserRegisterRequest request, HttpServletRequest req) throws Exception {
         assert req != null;
         String authHeader = req.getHeader("Authorization");
 
@@ -48,9 +51,6 @@ public class SuperAdminService {
             //it will take 1 string , that's password
             var passWord = usernamePassword.substring(separatorIndex + 1);
 
-            System.out.println("Username : " +userName);
-            System.out.println("Password : " +passWord);
-
             if(userName.equals(username) && passWord.equals(password) ) {
                 var user = User.builder()
                         .firstName(request.getFirstName())
@@ -59,6 +59,10 @@ public class SuperAdminService {
                         .password(passwordEncoder.encode(request.getPassword()))
                         .roles(Roles.ADMIN)
                         .build();
+                Optional<User> findUserByEmail = userRepository.findByEmail(request.getEmail());
+                if (findUserByEmail.isPresent()){
+                    throw new UserIsPresentException("User is Present in Database");
+                }
                 userRepository.save(user);
                 return UserRegisterResponse.builder()
                         .userName(request.getFirstName() + " " + request.getLastName())
@@ -66,7 +70,7 @@ public class SuperAdminService {
                         .message("Admin Created Successfully!")
                         .build();
             } else {
-                // Unauthorized access
+                // if our  Password or UserName is not Correct in Header
                 return UserRegisterResponse.builder()
                         .userName(request.getFirstName() + " " + request.getLastName())
                         .userEmail(request.getEmail())
