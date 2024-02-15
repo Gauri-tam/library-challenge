@@ -25,17 +25,16 @@ public class JwtAuthenticationController {
 
     // Use to Register the User
     @PostMapping("/register")
-    public ResponseEntity<UserRegisterResponse> registration(@RequestBody UserRegisterRequest request, HttpServletRequest req) {
+    public ResponseEntity<UserRegisterResponse> registration(@RequestBody UserRegisterRequest request, HttpServletRequest req) throws Exception {
         return ResponseEntity.ok(jwtAuthenticationServices.registration(request, req));
     }
 
     // Use to Authenticate The User
     @PostMapping("/authenticate")
-    public ResponseEntity<UserAuthenticationResponse> authenticate(@RequestBody UserAuthenticationRequest request) {
+    public ResponseEntity<UserAuthenticationResponse> authenticate(@RequestBody UserAuthenticationRequest request) throws Exception{
         return ResponseEntity.ok(jwtAuthenticationServices.authenticate(request));
     }
 
-    // http://localhost:8080/api/v1/auth/library/refresh-token
     // generate the token by using refresh token
     @PostMapping("/refresh-token")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -43,7 +42,7 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/register/super-admin")
-    public ResponseEntity<UserRegisterResponse> registrationSuperAdmin(@RequestBody UserRegisterRequest request) {
-        return ResponseEntity.ok(jwtAuthenticationServices.registerSuperAdmin(request));
+    public ResponseEntity<UserRegisterResponse> registrationSuperAdmin(@RequestBody UserRegisterRequest request, HttpServletRequest req) throws Exception {
+        return ResponseEntity.ok(jwtAuthenticationServices.registerSuperAdmin(request, req));
     }
 }

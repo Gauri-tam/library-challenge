@@ -9,9 +9,7 @@ import com.jwtAuthLibrary.jwtBookAuthor.entity.Token;
 import com.jwtAuthLibrary.jwtBookAuthor.entity.User;
 import com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles;
 import com.jwtAuthLibrary.jwtBookAuthor.enumerate.TokenType;
-import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.HeaderIsNotPresentException;
-import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.TokenIsNotValidException;
-import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.UserIsNotPresentException;
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.*;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.TokenRepository;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,14 +19,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class JwtAuthenticationServices {
-
-    private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
@@ -41,7 +38,7 @@ public class JwtAuthenticationServices {
     private final TokenRepository tokenRepository;
 
      // This method is use to get register the user;
-    public UserRegisterResponse registration(UserRegisterRequest request, HttpServletRequest req) {
+    public UserRegisterResponse registration(UserRegisterRequest request, HttpServletRequest req) throws Exception {
         String authHeader = req.getHeader("Authorization");
         if (authHeader == null){
             var user = User.builder()
@@ -51,6 +48,10 @@ public class JwtAuthenticationServices {
                     .password(bCryptPasswordEncoder.encode(request.getPassword()))
                     .roles(Roles.USER)
                     .build();
+           Optional<User> findUserByEmail = userRepository.findByEmail(request.getEmail());
+            if (findUserByEmail.isPresent()){
+                throw new UserIsPresentException("User is Present in Database");
+            }
             userRepository.save(user);
             return UserRegisterResponse.builder()
                     .userName(request.getFirstName()+" "+request.getLastName())
@@ -65,38 +66,60 @@ public class JwtAuthenticationServices {
                 .build();
     }
 
-    public UserRegisterResponse registerSuperAdmin(UserRegisterRequest request) {
-        var user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .roles(Roles.SUPER_ADMIN)
-                .build();
-        userRepository.save(user);
-        return UserRegisterResponse.builder()
-                .userName(request.getFirstName()+" "+request.getLastName())
-                .userEmail(request.getEmail())
-                .message("SUPER_ADMIN Created Successfully!")
-                .build();
+    public UserRegisterResponse registerSuperAdmin(UserRegisterRequest request,  HttpServletRequest req) throws  Exception {
+        String authHeader = req.getHeader("Authorization");
+        if (authHeader == null) {
+            var user = User.builder()
+                    .firstName(request.getFirstName())
+                    .lastName(request.getLastName())
+                    .email(request.getEmail())
+                    .password(bCryptPasswordEncoder.encode(request.getPassword()))
+                    .roles(Roles.SUPER_ADMIN)
+                    .build();
+            Optional<User> findUserByEmail = userRepository.findByEmail(request.getEmail());
+            if (findUserByEmail.isPresent()){
+                throw new UserIsPresentException("User is Present in Database");
+            }
+            userRepository.save(user);
+            return UserRegisterResponse.builder()
+                    .userName(request.getFirstName() + " " + request.getLastName())
+                    .userEmail(request.getEmail())
+                    .message("SUPER_ADMIN Created Successfully!")
+                    .build();
+        }else {
+            return UserRegisterResponse.builder()
+                    .userName(request.getFirstName()+" "+request.getLastName())
+                    .userEmail(request.getEmail())
+                    .message("Authorization must Not Take any Username and Password!")
+                    .build();
+        }
     }
 
      // This method is use to check if user is Authenticate or Not
-    public UserAuthenticationResponse authenticate(UserAuthenticationRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getUserName(),
-                request.getPassword()));
-        var user = userRepository.findByEmail(request.getUserName()).orElseThrow();
-        var jwtToken = jwtServices.generateToken(user);
-        var refreshToken = jwtServices.generateRefreshToken(user);
-        revokedAllToken(user);
-        saveUserToken(user, jwtToken);
-        return UserAuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
+    public UserAuthenticationResponse authenticate(UserAuthenticationRequest request) throws Exception {
+        if (!request.getUserName().isEmpty() && !request.getPassword().isEmpty()) {
+            try {
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                        request.getUserName(),
+                        request.getPassword()));
+            } catch (Exception e)
+            {
+                throw new Exception("Bad Credentials! Check your Username And Password");
+            }
+            // if your password is not correct bad credential
+            var user = userRepository.findByEmail(request.getUserName()).orElseThrow();
+            var jwtToken = jwtServices.generateToken(user);
+            var refreshToken = jwtServices.generateRefreshToken(user);
+            revokedAllToken(user);
+            saveUserToken(user, jwtToken);
+            return UserAuthenticationResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        }else {
+            throw new UsernameAndPasswordNotShouldBeBlankException("Username and Password is Required!");
+        }
     }
-
     // whenever the user get authenticated it will generated
     // token and it will get Stored inside the Token Entity
     private void saveUserToken(User user, String jwtToken) {
