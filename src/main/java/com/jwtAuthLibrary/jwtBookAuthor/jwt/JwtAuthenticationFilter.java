@@ -1,5 +1,6 @@
 package com.jwtAuthLibrary.jwtBookAuthor.jwt;
 
+import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.HeaderIsNotPresentException;
 import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.TokenIsNotValidException;
 import com.jwtAuthLibrary.jwtBookAuthor.exceptionclass.UserIsNotPresentException;
 import com.jwtAuthLibrary.jwtBookAuthor.repository.TokenRepository;
@@ -41,10 +42,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
         final String token;
-        final String userEmail;
+        final String userEmail; // we can take what ever is your username
         if (authHeader == null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
-        return;
+            throw new HeaderIsNotPresentException("Header is not null!");
         }
         token = authHeader.substring(7);
         userEmail = jwtServices.extractUserName(token);
