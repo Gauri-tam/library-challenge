@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SuperAdminService {
 
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final UserRepository userRepository;
 
@@ -42,7 +42,7 @@ public class SuperAdminService {
             // This Will take -> c3VwZXJhZG1pbjpzdXBlcmFkbWlu
             String usernamePassword = new String(Base64.decodeBase64(authHeader.substring(6)));
 
-            // and convert it into the username:password
+            // and convert it into the username:password // superadmin:superadmin
             int separatorIndex = usernamePassword.indexOf(':');
 
             //it will take 0 string , that's username
@@ -56,7 +56,7 @@ public class SuperAdminService {
                         .firstName(request.getFirstName())
                         .lastName(request.getLastName())
                         .email(request.getEmail())
-                        .password(passwordEncoder.encode(request.getPassword()))
+                        .password(bCryptPasswordEncoder.encode(request.getPassword()))
                         .roles(Roles.ADMIN)
                         .build();
                 Optional<User> findUserByEmail = userRepository.findByEmail(request.getEmail());
@@ -78,7 +78,7 @@ public class SuperAdminService {
                         .build();
             }
         } else {
-            // No or invalid Authorization header
+            // null or invalid Authorization header
             return UserRegisterResponse.builder()
                     .userName(request.getFirstName() + " " + request.getLastName())
                     .userEmail(request.getEmail())
