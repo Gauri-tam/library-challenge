@@ -43,6 +43,10 @@ public class User implements UserDetails {
         return password;
     }
 
+    public String getName() {
+        return this.firstName +" "+this.lastName;
+    }
+
     @Override
     public String getUsername() {
         return email;

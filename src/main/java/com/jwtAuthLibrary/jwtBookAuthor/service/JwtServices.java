@@ -1,5 +1,6 @@
 package com.jwtAuthLibrary.jwtBookAuthor.service;
 
+import com.jwtAuthLibrary.jwtBookAuthor.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -50,22 +51,24 @@ public class JwtServices {
     }
 
     //  generate Token
-    public String generateToken(UserDetails userDetails){
-        return generateToken(new HashMap<>(),userDetails);
+    public String generateToken(User user){
+        return generateToken(new HashMap<>(),user);
     }
 
-    public String generateRefreshToken(UserDetails userDetails){
-        return buildToken(new HashMap<>(), userDetails, refreshToken);
+    public String generateRefreshToken(User user){
+        return buildToken(new HashMap<>(), user, refreshToken);
     }
 
-    private String generateToken(Map<String, Object> claims, UserDetails userDetails){
-        return buildToken(claims, userDetails, jwtExpiration);
+    private String generateToken(Map<String, Object> claims, User user){
+        return buildToken(claims, user, jwtExpiration);
     }
-    private String buildToken(Map<String, Object> claims, UserDetails userDetails, long expiration){
+    private String buildToken(Map<String, Object> claims,User user , long expiration){
         return Jwts.builder()
                 .setClaims(claims)
                 .setHeaderParam("typ", "JWT")
-                .setSubject(userDetails.getUsername())
+                .setId(user.getUserId().toString())
+                .claim("name",user.getName())
+                .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)

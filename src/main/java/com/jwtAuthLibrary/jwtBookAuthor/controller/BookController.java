@@ -10,11 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/library")
+@RequestMapping("/api/v2/library")
 @RequiredArgsConstructor
 public class BookController {
 
-    // http://localhost:8080/api/v1/library/book
+    // http://localhost:8080/api/v2/library/book
 
     private final BookServices bookServices;
 

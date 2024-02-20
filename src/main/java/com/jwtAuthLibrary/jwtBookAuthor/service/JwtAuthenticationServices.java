@@ -100,11 +100,11 @@ public class JwtAuthenticationServices {
         // check if username or password is Empty or not
         if ( !request.getUserName().isEmpty() && !request.getPassword().isEmpty()) {
                 try {
-                    // if Username or password id not correct
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                             request.getUserName(),
                             request.getPassword()));
                 } catch (Exception e) {
+                    // if Username or password id not correct
                     throw new Exception("Bad Credentials! Check your Username And Password");
                 }
                 // if your password is not correct bad credential or your username is also nor correct
@@ -118,7 +118,7 @@ public class JwtAuthenticationServices {
                         .refreshToken(refreshToken)
                         .build();
         }else {
-            throw new Exception("UserName or Password is Not Empty!");
+            throw new Exception("UserName or Password is Require!");
         }
     }
     // whenever the user get authenticated it will generated
@@ -136,13 +136,13 @@ public class JwtAuthenticationServices {
 
     //it is Use for Cancel the Token Of User by Using userId
     private void revokedAllToken(User user){
-        var isValidUser = tokenRepository.findTokenByUserId(user.getUserId());
-        if (isValidUser.isEmpty()){ return;}
-        isValidUser.forEach( t -> {
+        var userToken = tokenRepository.findTokenByUserId(user.getUserId());
+        if (userToken.isEmpty()){ return; }
+        userToken.forEach( t -> {
             t.setExpired(true);
             t.setRevoked(true);
         });
-        tokenRepository.saveAll(isValidUser);
+        tokenRepository.saveAll(userToken);
     }
 
     // generate access token by using refresh token.
@@ -151,7 +151,7 @@ public class JwtAuthenticationServices {
         final String refreshToken;
         final String userEmail;
 
-        //Make Sure Your Header Must be Not null
+        // Make Sure Your Header Must be Not null
         // And Also Authorization will not start with the Bearer!
         if (authHeader == null || !authHeader.startsWith("Bearer ")){
             throw new HeaderIsNotPresentException("Header is not null!");
