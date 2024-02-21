@@ -20,8 +20,8 @@ public interface BookRepository extends JpaRepository<Book, Integer>{
             "    left join Book b\n" +
             "    on  b.bookId = a.authId\n" +
             "    where a.authName = :authName")
-        Page<Book> findBookByAuthName(@Param("authName") String authName, Pageable pageable);
+        Page<Book> findBookByAuthName(@Param("authName") String authName, Pageable pageable); // get the dynamic value as authName
 
        @Query("select b from Book b where b.bookName like %:bookName%")
-        List<Book> existsByBooksByBookName(@Param("bookName") String bookName);
+        List<Book> existsByBooksByBookName(@Param("bookName") String bookName); // get the dynamic value as bookName
 }

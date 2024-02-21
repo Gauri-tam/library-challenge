@@ -22,8 +22,8 @@ public class SuperAdminController {
 
     /***
      * super-admin can access all the operation like
-     * Create, Read, Update, Delete
-     * Admin also it can Create Admin
+     * Create, Read, Update, Delete of book and author
+     * Super-Admin can also Create Admin
      */
 
     private final AuthorServices authorServices;

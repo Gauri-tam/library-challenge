@@ -21,5 +21,5 @@ public interface AuthorRepository extends JpaRepository<Author, Integer> {
             "left join author_book ab on a.auth_id = ab.author_id\n" +
             "left join book b on  b.book_id = ab.book_id\n" +
             "where b.book_name = :bookName", nativeQuery = true)
-    Page<Author> findAuthorByBookName(@Param("bookName") String bookName, Pageable pageable);
+    Page<Author> findAuthorByBookName(@Param("bookName") String bookName, Pageable pageable); // get the dynamic value as bookName
 }

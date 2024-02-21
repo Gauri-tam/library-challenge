@@ -7,6 +7,7 @@ import com.jwtAuthLibrary.jwtBookAuthor.dto.UserRegisterResponse;
 import com.jwtAuthLibrary.jwtBookAuthor.service.JwtAuthenticationServices;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,17 +22,17 @@ public class JwtAuthenticationController {
 
     private final JwtAuthenticationServices jwtAuthenticationServices;
 
-    // http://localhost:8080/api/v1/auth/library/refresh-token
+    // http://localhost:8080/api/v1/auth/library/register
 
     // Use to Register the User
     @PostMapping("/register")
-    public ResponseEntity<UserRegisterResponse> registration(@RequestBody UserRegisterRequest request, HttpServletRequest req) throws Exception {
+    public ResponseEntity<UserRegisterResponse> registration(@Valid @RequestBody UserRegisterRequest request, HttpServletRequest req) throws Exception {
         return ResponseEntity.ok(jwtAuthenticationServices.registration(request, req));
     }
 
     // Use to Authenticate The User
     @PostMapping("/authenticate")
-    public ResponseEntity<UserAuthenticationResponse> authenticate(@RequestBody UserAuthenticationRequest request) throws Exception{
+    public ResponseEntity<UserAuthenticationResponse> authenticate(@Valid @RequestBody UserAuthenticationRequest request) throws Exception{
         return ResponseEntity.ok(jwtAuthenticationServices.authenticate(request));
     }
 

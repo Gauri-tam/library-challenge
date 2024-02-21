@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +20,7 @@ import static com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles.*;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
-@EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -33,8 +33,9 @@ public class SecurityConfig {
     private final LogoutHandler logoutHandler;
 
     private static final String[] URL = {
-            "/api/v2/library/**",  // for creating book and admin;
-            "/api/v1/auth/library/**"  // post all register, authenticate, refresh token;
+            "/api/v2/library/**",  // for creating book and author;
+            "/api/v1/auth/library/**",  // post all register, authenticate, refresh token;
+            "/api/v1/library/super-admin/**" // get all operations of super admin
     };
 
     @Bean
