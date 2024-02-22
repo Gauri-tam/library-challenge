@@ -15,8 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
-import static com.jwtAuthLibrary.jwtBookAuthor.enumerate.Permission.*;
-import static com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles.*;
+import static com.jwtAuthLibrary.jwtBookAuthor.enmurate.Permission.*;
+import static com.jwtAuthLibrary.jwtBookAuthor.enmurate.Roles.*;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration

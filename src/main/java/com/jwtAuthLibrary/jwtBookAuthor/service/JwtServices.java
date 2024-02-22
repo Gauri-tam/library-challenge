@@ -52,7 +52,7 @@ public class JwtServices {
 
     //  generate Token
     public String generateToken(User user){
-        return generateToken(new HashMap<>(),user);
+        return generateToken(new HashMap<>(),user );
     }
 
     public String generateRefreshToken(User user){

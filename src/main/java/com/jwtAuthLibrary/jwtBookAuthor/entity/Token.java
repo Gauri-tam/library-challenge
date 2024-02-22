@@ -1,6 +1,6 @@
 package com.jwtAuthLibrary.jwtBookAuthor.entity;
 
-import com.jwtAuthLibrary.jwtBookAuthor.enumerate.TokenType;
+import com.jwtAuthLibrary.jwtBookAuthor.enmurate.TokenType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

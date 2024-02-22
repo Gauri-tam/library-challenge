@@ -1,4 +1,4 @@
-package com.jwtAuthLibrary.jwtBookAuthor.enumerate;
+package com.jwtAuthLibrary.jwtBookAuthor.enmurate;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

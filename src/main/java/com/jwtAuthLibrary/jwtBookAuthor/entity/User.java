@@ -1,6 +1,6 @@
 package com.jwtAuthLibrary.jwtBookAuthor.entity;
 
-import com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles;
+import com.jwtAuthLibrary.jwtBookAuthor.enmurate.Roles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.jwtAuthLibrary.jwtBookAuthor.enumerate;
+package com.jwtAuthLibrary.jwtBookAuthor.enmurate;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.jwtAuthLibrary.jwtBookAuthor.enumerate.Permission.*;
+import static com.jwtAuthLibrary.jwtBookAuthor.enmurate.Permission.*;
 
 @RequiredArgsConstructor
 public enum Roles {

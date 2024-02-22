@@ -1,8 +1,7 @@
 package com.jwtAuthLibrary.jwtBookAuthor.dto;
 
-import com.jwtAuthLibrary.jwtBookAuthor.enumerate.Roles;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import com.jwtAuthLibrary.jwtBookAuthor.enmurate.Roles;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,20 +13,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserRegisterRequest {
 
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Not Accepting Empty Filed !")
+    @Size(min = 3, max = 20, message = "Your First Name should be in min 3 to max 20 characters !")
     private String firstName;
 
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Not Accepting Empty Filed !")
+    @Size(min = 3, max = 20, message = "your Last Name should be in min 3 to max 20 characters !")
     private String lastName;
 
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Not Accepting Empty Filed !")
+    @Email(message = "Invalid Email !")
     private String email;
 
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Not Accepting Empty Filed !")
+    @Size(min = 8 , message = "your password should be minimum 5 character !")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,20}$", message = "Invalid Password !")
     private String password;
     private Roles roles;
 }
