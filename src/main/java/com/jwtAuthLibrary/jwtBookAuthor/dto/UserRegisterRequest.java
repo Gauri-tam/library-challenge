@@ -26,8 +26,9 @@ public class UserRegisterRequest {
     private String email;
 
     @NotEmpty(message = "Not Accepting Empty Filed !")
-    @Size(min = 8 , message = "your password should be minimum 5 character !")
+    @Size(min = 8 , message = "your password should be minimum 8 character !")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,20}$", message = "Invalid Password !")
     private String password;
+
     private Roles roles;
 }

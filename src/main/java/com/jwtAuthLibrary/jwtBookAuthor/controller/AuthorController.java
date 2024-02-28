@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthorController {
 
-    // http://localhost:8080/api/v2/library/author/get
+    // http://localhost:8080/api/v2/library/author
 
     private final AuthorServices authorServices;
 

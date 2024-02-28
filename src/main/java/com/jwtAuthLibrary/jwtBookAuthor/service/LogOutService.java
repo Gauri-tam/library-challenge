@@ -22,10 +22,10 @@ public class LogOutService implements LogoutHandler {
         }
         token = authHeader.substring(7);
         var storeUser = tokenRepository.findUserByToken(token).orElseThrow();
-       if (storeUser != null){
+        if (storeUser != null){
            storeUser.setRevoked(true);
            storeUser.setExpired(true);
            tokenRepository.save(storeUser);
-       }
+        }
     }
 }
