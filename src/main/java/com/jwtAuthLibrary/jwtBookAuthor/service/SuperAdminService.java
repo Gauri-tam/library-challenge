@@ -82,7 +82,7 @@ public class SuperAdminService {
             return UserRegisterResponse.builder()
                     .userName(request.getFirstName() + " " + request.getLastName())
                     .userEmail(request.getEmail())
-                    .message("Access Denied! Authorization header missing or invalid")
+                    .message("Access Denied! Authorization header Empty or invalid")
                     .build();
         }
     }
