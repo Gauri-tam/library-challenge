@@ -56,7 +56,7 @@ public class SecurityConfig {
                 // response messages
                 .exceptionHandling(exception->exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 // Create a Session Management as STATELESS
-                .sessionManagement(session->session .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 // add Authentication filter
                 .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class)
