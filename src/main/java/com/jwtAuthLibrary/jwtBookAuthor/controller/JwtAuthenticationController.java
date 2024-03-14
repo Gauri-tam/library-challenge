@@ -25,7 +25,7 @@ public class JwtAuthenticationController {
     // http://localhost:8080/api/v1/auth/library/register
 
     // Use to Register the User
-    @PostMapping("/register")
+    @PostMapping("/registerUser")
     public ResponseEntity<UserRegisterResponse> registration(@Valid @RequestBody UserRegisterRequest request, HttpServletRequest req) throws Exception {
         return ResponseEntity.ok(jwtAuthenticationServices.registration(request, req));
     }
@@ -42,7 +42,7 @@ public class JwtAuthenticationController {
         jwtAuthenticationServices.refreshToken(request, response);
     }
 
-    @PostMapping("/register/super-admin")
+    @PostMapping("/registerSuperAdmin")
     public ResponseEntity<UserRegisterResponse> registrationSuperAdmin(@RequestBody UserRegisterRequest request, HttpServletRequest req) throws Exception {
         return ResponseEntity.ok(jwtAuthenticationServices.registerSuperAdmin(request, req));
     }

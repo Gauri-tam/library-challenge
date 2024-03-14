@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,8 +33,9 @@ public class SuperAdminController {
 
     private final SuperAdminService superAdminService;
 
-    // Use to Register the Admin
-    @PostMapping("/register")
+    // Use to Register the Admin /api/v1/library/super-admin/registerAdmin
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PostMapping("/registerAdmin")
     public ResponseEntity<UserRegisterResponse> registration(@RequestBody UserRegisterRequest request, HttpServletRequest req) throws  Exception {
         return ResponseEntity.ok(superAdminService.registerAdmin(request, req ));
     }

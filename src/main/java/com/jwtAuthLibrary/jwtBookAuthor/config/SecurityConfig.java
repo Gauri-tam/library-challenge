@@ -21,6 +21,7 @@ import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableMethodSecurity
+
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -33,9 +34,9 @@ public class SecurityConfig {
     private final LogoutHandler logoutHandler;
 
     private static final String[] URL = {
-            "/api/v2/library/**",  // for creating book and author;
-            "/api/v1/auth/library/**",  // post all register, authenticate, refresh token;
-            "/api/v1/library/super-admin/**" // get all operations of super admin
+            "/api/v2/library/**",                                                                                        // for creating book and author;
+            "/api/v1/auth/library/**",
+            "/api/v1/library/super-admin/registerAdmin"
     };
 
     @Bean
@@ -43,16 +44,19 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req->req
                         .requestMatchers(URL).permitAll()
-                        // all admin related operations + also super admin can use it.
-                        .requestMatchers( "/api/v1/library/admin/**").hasAnyRole(ADMIN.name(), SUPER_ADMIN.name())
+                        .requestMatchers("/api/v1/library/super-admin/**").hasRole(SUPER_ADMIN_READ.name())               // get all operations of book and Author by super admin also creating Admin.
+                        .requestMatchers(GET, "/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_READ.name())
+                        .requestMatchers(POST, "/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_CREATE.name())
+                        .requestMatchers(PUT, "/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_UPDATE.name())
+                        .requestMatchers(DELETE, "/api/v1/library/super-admin/**").hasAuthority(SUPER_ADMIN_DELETE.name())
+                        .requestMatchers( "/api/v1/library/admin/**").hasAnyRole(ADMIN.name(), SUPER_ADMIN.name())        // get all operations of book and author by admin and super admin.
                         .requestMatchers(GET,"/api/v1/library/admin/**").hasAnyAuthority(ADMIN_READ.name(), SUPER_ADMIN_READ.name())
                         .requestMatchers(POST, "/api/v1/library/admin/**").hasAnyAuthority(ADMIN_CREATE.name(), SUPER_ADMIN_CREATE.name())
                         .requestMatchers(PUT, "/api/v1/library/admin/**").hasAnyAuthority(ADMIN_UPDATE.name(), SUPER_ADMIN_UPDATE.name())
                         .requestMatchers(DELETE, "/api/v1/library/admin/**").hasAnyAuthority(ADMIN_DELETE.name(), SUPER_ADMIN_DELETE.name())
                         // only get operations for user
                         .requestMatchers("/api/v1/library/user/**").hasRole(USER.name())
-                        .requestMatchers(GET, "/api/v1/library/user/**").hasAuthority(USER_READ.name())
-                        .anyRequest().authenticated())
+                        .requestMatchers(GET, "/api/v1/library/user/**").hasAuthority(USER_READ.name()))
                 // response messages
                 .exceptionHandling(exception->exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 // Create a Session Management as STATELESS
